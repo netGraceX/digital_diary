@@ -4,10 +4,10 @@ spring:
     username: netgrace
     password: 22fall19
   jpa:
-  hibernate:
-    ddl-auto: create-drop
-  properties:
     hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-    format_sql: true
-  show-sql: true
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+      format_sql: true
+    show-sql: true
