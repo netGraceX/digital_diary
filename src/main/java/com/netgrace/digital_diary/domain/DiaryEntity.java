@@ -12,5 +12,10 @@ public class DiaryEntity {
     private Long id;
     private String title;
     private String description;
-    private LocalDate createdDate;
+    private LocalDate creationDate;
+
+    @PrePersist
+    public void prePersist() {
+        this.creationDate = LocalDate.now();
+    }
 }
