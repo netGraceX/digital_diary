@@ -7,6 +7,7 @@ import com.netgrace.digital_diary.repositories.PersonalDiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,12 @@ public class DiaryService {
     @Autowired
     private PersonalDiaryMapper personalDiaryMapper;
 
+    @Transactional
     public PersonalDiaryDTO createPersonalDiary(PersonalDiaryDTO personalDiaryDTO) {
         PersonalDiaryEntity personalDiaryEntity = personalDiaryMapper.PersonalDiaryDTOtoPersonalDiary(personalDiaryDTO);
+        //personalDiaryEntity.getGoals().forEach(
+        //        goalEntity -> goalEntity.setDiary(personalDiaryEntity)
+        //);
         return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(personalDiaryEntity));
     }
 

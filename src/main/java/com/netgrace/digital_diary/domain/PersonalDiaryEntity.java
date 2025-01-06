@@ -1,21 +1,21 @@
 package com.netgrace.digital_diary.domain;
 
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "personal_diary")
 @Data
-public class PersonalDiaryEntity extends DiaryEntity{
-
-    @OneToMany(mappedBy = "diary")
-    private List<Goal> goals;
-    @OneToMany(mappedBy = "diary")
-    private List<HabitTracker> habitTracker;
-    @OneToMany(mappedBy = "diary")
-    private List<ToDoList> toDoList;
+public class PersonalDiaryEntity extends DiaryEntity {
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "diary_id")
+    private List<GoalEntity> goals;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "diary_id")
+    private List<HabitTrackerEntity> habitTracker;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "diary_id")
+    private List<ToDoListEntity> toDoList;
     private String notes;
-
 }

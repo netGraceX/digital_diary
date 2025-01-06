@@ -2,13 +2,9 @@ package com.netgrace.digital_diary.domain;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.springframework.stereotype.Component;
-
 @Mapper
 public interface PersonalDiaryMapper {
-
-    PersonalDiaryDTO personalDiaryToPersonalDiaryDTO(PersonalDiaryEntity bujo);
-    PersonalDiaryEntity PersonalDiaryDTOtoPersonalDiary(PersonalDiaryDTO bujoDTO);
-
+    PersonalDiaryDTO personalDiaryToPersonalDiaryDTO(PersonalDiaryEntity diary);
+    PersonalDiaryEntity PersonalDiaryDTOtoPersonalDiary(PersonalDiaryDTO diaryDTO);
     void updatePersonalDiaryFromDto(PersonalDiaryDTO personalDiaryDTO, @MappingTarget PersonalDiaryEntity personalDiaryEntity);
 }

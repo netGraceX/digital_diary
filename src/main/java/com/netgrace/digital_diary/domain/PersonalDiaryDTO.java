@@ -4,8 +4,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class PersonalDiaryDTO {
-
+public class PersonalDiaryDTO extends DiaryEntity{
     private List<GoalDTO> goals;
     private List<HabitTrackerDTO> habitTracker;
     private List<ToDoListDTO> toDoList;

@@ -4,9 +4,9 @@ import com.netgrace.digital_diary.domain.PersonalDiaryDTO;
 import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
 import com.netgrace.digital_diary.services.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -34,7 +34,7 @@ public class DiaryController {
         return ResponseEntity.ok(personalDiaries);
     }
 
-    @GetMapping("/personal_diaries/{id}")
+    @GetMapping("/personal_diary/{id}")
     public ResponseEntity<PersonalDiaryEntity> getPersonalDiaryById(@PathVariable Long id) {
         return diaryService.getPersonalDiaryById(id)
                 .map(ResponseEntity::ok)

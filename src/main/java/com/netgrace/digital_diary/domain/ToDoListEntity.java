@@ -1,7 +1,6 @@
 package com.netgrace.digital_diary.domain;
 
 import lombok.Data;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,16 +8,14 @@ import java.util.List;
 @Entity
 @Table(name = "to_do_list")
 @Data
-public class ToDoList {
+public class ToDoListEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long toDoId;
-
+    private Long id;
     @ManyToOne
     private PersonalDiaryEntity diary;
-
-    private LocalDate day;
-
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks;
+    private LocalDate dayDate;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "todo_id")
+    private List<TaskEntity> tasks;
 }

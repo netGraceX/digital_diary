@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 @Data
 public class ToDoListDTO {
-    private Long toDoId;
-    private LocalDate day;
-    private List<Task> tasks;
+    private LocalDate dayDate;
+    private List<TaskEntity> tasks;
 }
