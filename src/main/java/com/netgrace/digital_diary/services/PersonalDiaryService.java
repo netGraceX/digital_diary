@@ -77,8 +77,6 @@ public class PersonalDiaryService {
         }
     }
 
-    //GOAL SECTION
-
     public GoalDTO createGoal(Long diaryId, GoalDTO goalDTO) {
         PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + diaryId + " not found"));
@@ -94,36 +92,6 @@ public class PersonalDiaryService {
         return goals;
     }
 
-    public GoalDTO getGoalById(Long goalId) {
-        return goalRepository.findById(goalId).map(goalMapper::goalEntityToGoalDTO).get();
-    }
-
-    public void deleteGoal(Long id) {
-        if(goalRepository.existsById(id)) {
-            goalRepository.deleteById(id);
-        }else {
-        throw new IllegalStateException("Goal with id " + id + " not found");
-        }
-    }
-
-    public GoalDTO updateGoal(Long id, GoalDTO goalDTO) {
-        GoalEntity goal = goalRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Goal with id " + id + " not found"));
-        GoalEntity updatedGoal = goalMapper.goalDTOtoGoalEntity(goalDTO);
-        updatedGoal.setId(goal.getId());
-        updatedGoal.setDiary(goal.getDiary());
-        GoalEntity savedGoal = goalRepository.save(updatedGoal);
-        return goalMapper.goalEntityToGoalDTO(savedGoal);
-    }
-
-    public GoalDTO patchGoal(Long id, GoalDTO goalDTO) {
-        GoalEntity goal = goalRepository.findById(id)
-                .orElseThrow(()-> new IllegalStateException("Goal with id" + id + "not found"));
-        goalMapper.updateGoalFromDTO(goalDTO, goal);
-        return goalMapper.goalEntityToGoalDTO(goalRepository.save(goal));
-    }
-
-    //HABIT TRACKER
     public HabitTrackerDTO createHabitTracker(Long diaryId, HabitTrackerDTO habitTrackerDTO) {
         PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));

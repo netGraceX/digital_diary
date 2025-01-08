@@ -21,8 +21,6 @@ public class PersonalDiaryController {
         this.personalDiaryService = journalService;
     }
 
-
-    //DIARY SECTION
     @PostMapping("/personal_diary")
     public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@RequestBody PersonalDiaryDTO personalDiaryDTO) {
         PersonalDiaryDTO createdPersonalDiary = personalDiaryService.createPersonalDiary(
@@ -59,9 +57,7 @@ public class PersonalDiaryController {
         return ResponseEntity.noContent().build();
     }
 
-    //GOAL SECTION
-
-    @PostMapping("/personal_diary/goals/{diaryId}")
+    @PostMapping("/personal_diary/{diaryId}/goals")
     public ResponseEntity<GoalDTO> createGoal(@PathVariable Long diaryId, @RequestBody GoalDTO goalDTO) {
         GoalDTO createdGoal = personalDiaryService.createGoal(
                 diaryId,
@@ -70,36 +66,10 @@ public class PersonalDiaryController {
         return ResponseEntity.ok(createdGoal);
     }
 
-    @GetMapping("/personal_diary/goals/{diaryId}")
+    @GetMapping("/personal_diary/{diaryId}/goals")
     public ResponseEntity<List<GoalDTO>> getAllGoals(@PathVariable Long diaryId) {
         return ResponseEntity.ok(personalDiaryService.getAllGoals(diaryId));
     }
-
-    @GetMapping("/personal_diary/goals/goal/{goalId}")
-    public GoalDTO getGoalById(@PathVariable Long goalId) {
-        return personalDiaryService.getGoalById(goalId);
-    }
-
-
-    @PutMapping("/personal_diary/goals/{id}")
-    public ResponseEntity<GoalDTO> updateGoal(@PathVariable Long id, @RequestBody GoalDTO goalDTO) {
-        GoalDTO updatedGoal = personalDiaryService.updateGoal(id, goalDTO);
-        return ResponseEntity.ok(updatedGoal);
-    }
-
-    @PatchMapping("/personal_diary/goals/{id}")
-    public ResponseEntity<GoalDTO> patchGoal(@PathVariable Long id, @RequestBody GoalDTO goalDTO) {
-        GoalDTO updatedGoal = personalDiaryService.patchGoal(id, goalDTO);
-        return  ResponseEntity.ok(goalDTO);
-    }
-
-    @DeleteMapping("/personal_diary/goals/{id}")
-    public ResponseEntity<Void> deleteGoal(@PathVariable Long id) {
-        personalDiaryService.deleteGoal(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    //HABIT TRACKER
 
     @PostMapping("/personal_diary/{diaryId}/habits")
     public ResponseEntity<HabitTrackerDTO> createHabitTracker(@PathVariable Long diaryId, @RequestBody HabitTrackerDTO habitTrackerDTO) {
