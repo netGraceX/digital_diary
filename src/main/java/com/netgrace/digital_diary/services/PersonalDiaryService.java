@@ -2,6 +2,7 @@ package com.netgrace.digital_diary.services;
 
 import com.netgrace.digital_diary.domain.*;
 import com.netgrace.digital_diary.repositories.GoalRepository;
+import com.netgrace.digital_diary.repositories.HabitTrackerRepository;
 import com.netgrace.digital_diary.repositories.PersonalDiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class DiaryService {
+public class PersonalDiaryService {
 
     @Autowired
     private PersonalDiaryRepository personalDiaryRepository;
@@ -19,10 +20,16 @@ public class DiaryService {
     private GoalRepository goalRepository;
 
     @Autowired
+    private HabitTrackerRepository habitTrackerRepository;
+
+    @Autowired
     private PersonalDiaryMapper personalDiaryMapper;
 
     @Autowired
     private GoalMapper goalMapper;
+
+    @Autowired
+    private HabitTrackerMapper habitTrackerMapper;
 
     @Transactional
     public PersonalDiaryDTO createPersonalDiary(PersonalDiaryDTO personalDiaryDTO) {
@@ -42,7 +49,6 @@ public class DiaryService {
         PersonalDiaryDTO personalDiary = personalDiaryRepository.findById(id).map(personalDiaryMapper::personalDiaryToPersonalDiaryDTO).get();
         return personalDiary;
     }
-
 
     public PersonalDiaryDTO patchPersonalDiary(Long id, PersonalDiaryDTO patchDetails) {
         PersonalDiaryEntity existingPersonalDiary = personalDiaryRepository.findById(id)
@@ -116,5 +122,25 @@ public class DiaryService {
         goalMapper.updateGoalFromDTO(goalDTO, goal);
         return goalMapper.goalEntityToGoalDTO(goalRepository.save(goal));
     }
+
+    //HABIT TRACKER
+    public HabitTrackerDTO createHabitTracker(Long diaryId, HabitTrackerDTO habitTrackerDTO) {
+        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+        HabitTrackerEntity tracker = habitTrackerMapper.habitTrackerDTOEntityToHabitTracker(habitTrackerDTO);
+        tracker.setDiary(diary);
+        return habitTrackerMapper.habitTrackerToHabitTrackerDTO(habitTrackerRepository.save(tracker));
+    }
+
+    public List<HabitTrackerDTO> getAllHabitTrackers(Long diaryId) {
+        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+        List<HabitTrackerDTO> trackerList = diary.getHabitTracker()
+                .stream()
+                .map(habitTrackerMapper::habitTrackerToHabitTrackerDTO)
+                .collect(Collectors.toList());
+        return trackerList;
+    }
+
 }
 
