@@ -1,7 +1,7 @@
 package com.netgrace.digital_diary.controllers;
 
+import com.netgrace.digital_diary.domain.GoalDTO;
 import com.netgrace.digital_diary.domain.PersonalDiaryDTO;
-import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
 import com.netgrace.digital_diary.services.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +19,14 @@ public class DiaryController {
         this.diaryService = journalService;
     }
 
+
+    //DIARY SECTION
     @PostMapping("/personal_diary")
     public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@RequestBody PersonalDiaryDTO personalDiaryDTO) {
-        PersonalDiaryDTO createdPersonalDiaryEntity = diaryService.createPersonalDiary(
+        PersonalDiaryDTO createdPersonalDiary = diaryService.createPersonalDiary(
                 personalDiaryDTO
         );
-        return ResponseEntity.ok(createdPersonalDiaryEntity);
+        return ResponseEntity.ok(createdPersonalDiary);
     }
 
     @GetMapping("/personal_diary")
@@ -54,4 +56,45 @@ public class DiaryController {
         diaryService.deletePersonalDiary(id);
         return ResponseEntity.noContent().build();
     }
+
+    //GOAL SECTION
+
+    @PostMapping("/personal_diary/goals/{diaryId}")
+    public ResponseEntity<GoalDTO> createGoal(@PathVariable Long diaryId, @RequestBody GoalDTO goalDTO) {
+        GoalDTO createdGoal = diaryService.createGoal(
+                diaryId,
+                goalDTO
+        );
+        return ResponseEntity.ok(createdGoal);
+    }
+
+    @GetMapping("/personal_diary/goals/{diaryId}")
+    public ResponseEntity<List<GoalDTO>> getAllGoals(@PathVariable Long diaryId) {
+        return ResponseEntity.ok(diaryService.getAllGoals(diaryId));
+    }
+
+    @GetMapping("/personal_diary/goals/goal/{goalId}")
+    public GoalDTO getGoalById(@PathVariable Long goalId) {
+        return diaryService.getGoalById(goalId);
+    }
+
+
+    @PutMapping("/personal_diary/goals/{id}")
+    public ResponseEntity<GoalDTO> updateGoal(@PathVariable Long id, @RequestBody GoalDTO goalDTO) {
+        GoalDTO updatedGoal = diaryService.updateGoal(id, goalDTO);
+        return ResponseEntity.ok(updatedGoal);
+    }
+
+    @PatchMapping("/personal_diary/goals/{id}")
+    public ResponseEntity<GoalDTO> patchGoal(@PathVariable Long id, @RequestBody GoalDTO goalDTO) {
+        GoalDTO updatedGoal = diaryService.patchGoal(id, goalDTO);
+        return  ResponseEntity.ok(goalDTO);
+    }
+
+    @DeleteMapping("/personal_diary/goals/{id}")
+    public ResponseEntity<Void> deleteGoal(@PathVariable Long id) {
+        diaryService.deleteGoal(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
