@@ -4,7 +4,6 @@ import com.netgrace.digital_diary.domain.PersonalDiaryDTO;
 import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
 import com.netgrace.digital_diary.services.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -29,23 +28,25 @@ public class DiaryController {
     }
 
     @GetMapping("/personal_diary")
-    public ResponseEntity<List<PersonalDiaryEntity>> getAllPersonalDiaries() {
-        List<PersonalDiaryEntity> personalDiaries = diaryService.getAllPersonalDiaries();
-        return ResponseEntity.ok(personalDiaries);
+    public ResponseEntity<List<PersonalDiaryDTO>> getAllPersonalDiaries() {
+        return ResponseEntity.ok(diaryService.getAllPersonalDiaries());
     }
 
     @GetMapping("/personal_diary/{id}")
-    public ResponseEntity<PersonalDiaryEntity> getPersonalDiaryById(@PathVariable Long id) {
-        return diaryService.getPersonalDiaryById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PersonalDiaryDTO getPersonalDiaryById(@PathVariable Long id) {
+        return diaryService.getPersonalDiaryById(id);
     }
-
 
     @PutMapping("/personal_diary/{id}")
     public ResponseEntity<PersonalDiaryDTO> updatePersonalDiary(@PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
         PersonalDiaryDTO updatedPersonalDiaryEntity = diaryService.updatePersonalDiary(id, personalDiaryDTO);
         return ResponseEntity.ok(updatedPersonalDiaryEntity);
+    }
+
+    @PatchMapping("/personal_diary/{id}")
+    public ResponseEntity<PersonalDiaryDTO> patchPersonalDiary(@PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+        PersonalDiaryDTO updatedPersonalDiary = diaryService.patchPersonalDiary(id, personalDiaryDTO);
+        return  ResponseEntity.ok(updatedPersonalDiary);
     }
 
     @DeleteMapping("/personal_diary/{id}")

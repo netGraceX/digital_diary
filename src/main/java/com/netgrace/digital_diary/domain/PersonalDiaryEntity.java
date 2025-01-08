@@ -17,5 +17,4 @@ public class PersonalDiaryEntity extends DiaryEntity {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "diary_id")
     private List<ToDoListEntity> toDoList;
-    private String notes;
 }

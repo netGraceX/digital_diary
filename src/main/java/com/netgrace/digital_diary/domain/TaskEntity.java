@@ -14,6 +14,5 @@ public class TaskEntity {
     private TaskStatus status;
     @ManyToOne
     private ToDoListEntity todo;
-
 }
 

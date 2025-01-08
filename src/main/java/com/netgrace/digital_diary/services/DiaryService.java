@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DiaryService {
@@ -22,26 +23,39 @@ public class DiaryService {
 
     @Transactional
     public PersonalDiaryDTO createPersonalDiary(PersonalDiaryDTO personalDiaryDTO) {
-        PersonalDiaryEntity personalDiaryEntity = personalDiaryMapper.PersonalDiaryDTOtoPersonalDiary(personalDiaryDTO);
-        //personalDiaryEntity.getGoals().forEach(
-        //        goalEntity -> goalEntity.setDiary(personalDiaryEntity)
-        //);
+        PersonalDiaryEntity personalDiaryEntity = personalDiaryMapper.personalDiaryDTOtoPersonalDiary(personalDiaryDTO);
         return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(personalDiaryEntity));
     }
 
-    public List<PersonalDiaryEntity> getAllPersonalDiaries() {
-        return personalDiaryRepository.findAll();
+    public List<PersonalDiaryDTO> getAllPersonalDiaries() {
+        List<PersonalDiaryEntity> personalDiaries = personalDiaryRepository.findAll();
+        return personalDiaries.stream()
+                .map(personalDiaryMapper::personalDiaryToPersonalDiaryDTO)
+                .collect(Collectors.toList());
     }
 
-    public Optional<PersonalDiaryEntity> getPersonalDiaryById(Long id) {
-        return personalDiaryRepository.findById(id);
+    public PersonalDiaryDTO getPersonalDiaryById(Long id) {
+        PersonalDiaryDTO personalDiary = personalDiaryRepository.findById(id).map(personalDiaryMapper::personalDiaryToPersonalDiaryDTO).get();
+        return personalDiary;
+    }
+
+    public PersonalDiaryDTO patchPersonalDiary(Long id, PersonalDiaryDTO patchDetails) {
+        PersonalDiaryEntity existingPersonalDiary = personalDiaryRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + id + " not found"));
+        personalDiaryMapper.updatePersonalDiaryFromDto(patchDetails, existingPersonalDiary);
+        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(existingPersonalDiary));
     }
 
     public PersonalDiaryDTO updatePersonalDiary(Long id, PersonalDiaryDTO updatedPersonalDiaryDTO) {
-        PersonalDiaryEntity existingPersonalDiary = personalDiaryRepository.findById(id)
+        PersonalDiaryEntity existingDiary = personalDiaryRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + id + " not found"));
-        personalDiaryMapper.updatePersonalDiaryFromDto(updatedPersonalDiaryDTO, existingPersonalDiary);
-        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(existingPersonalDiary));
+
+        PersonalDiaryEntity updatedDiary = personalDiaryMapper.personalDiaryDTOtoPersonalDiary(updatedPersonalDiaryDTO);
+        updatedDiary.setId(existingDiary.getId());
+
+        PersonalDiaryEntity savedDiary = personalDiaryRepository.save(updatedDiary);
+
+        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(savedDiary);
     }
 
     public void deletePersonalDiary(Long id) {
