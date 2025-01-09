@@ -44,4 +44,6 @@ public class GoalService {
         goalMapper.updateGoalFromDTO(patchDetails, goal);
         return goalMapper.goalEntityToGoalDTO(goalRepository.save(goal));
     }
+
+
 }

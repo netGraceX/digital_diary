@@ -4,6 +4,7 @@ import com.netgrace.digital_diary.domain.*;
 import com.netgrace.digital_diary.repositories.GoalRepository;
 import com.netgrace.digital_diary.repositories.HabitTrackerRepository;
 import com.netgrace.digital_diary.repositories.PersonalDiaryRepository;
+import com.netgrace.digital_diary.repositories.ToDoListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -23,6 +24,9 @@ public class PersonalDiaryService {
     private HabitTrackerRepository habitTrackerRepository;
 
     @Autowired
+    private ToDoListRepository toDoListRepository;
+
+    @Autowired
     private PersonalDiaryMapper personalDiaryMapper;
 
     @Autowired
@@ -30,6 +34,9 @@ public class PersonalDiaryService {
 
     @Autowired
     private HabitTrackerMapper habitTrackerMapper;
+
+    @Autowired
+    private ToDoListMapper toDoListMapper;
 
     @Transactional
     public PersonalDiaryDTO createPersonalDiary(PersonalDiaryDTO personalDiaryDTO) {
@@ -108,6 +115,24 @@ public class PersonalDiaryService {
                 .map(habitTrackerMapper::habitTrackerToHabitTrackerDTO)
                 .collect(Collectors.toList());
         return trackerList;
+    }
+
+    public ToDoListDTO createToDoList(Long diaryId, ToDoListDTO toDoListDTO) {
+        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+        ToDoListEntity toDoList = toDoListMapper.toDoListDTOtoToDoListEntity(toDoListDTO);
+        toDoList.setDiary(diary);
+        return toDoListMapper.toDoListEntityToToDoListDTO(toDoListRepository.save(toDoList));
+    }
+
+    public List<ToDoListDTO> getAllToDoLists(Long diaryId) {
+        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+        List<ToDoListDTO> todoList = diary.getToDoList()
+                .stream()
+                .map(toDoListMapper::toDoListEntityToToDoListDTO)
+                .collect(Collectors.toList());
+        return todoList;
     }
 
 }

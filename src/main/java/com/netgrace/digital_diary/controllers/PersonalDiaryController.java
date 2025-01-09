@@ -2,8 +2,8 @@ package com.netgrace.digital_diary.controllers;
 
 import com.netgrace.digital_diary.domain.GoalDTO;
 import com.netgrace.digital_diary.domain.HabitTrackerDTO;
-import com.netgrace.digital_diary.domain.HabitTrackerEntity;
 import com.netgrace.digital_diary.domain.PersonalDiaryDTO;
+import com.netgrace.digital_diary.domain.ToDoListDTO;
 import com.netgrace.digital_diary.services.PersonalDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +83,20 @@ public class PersonalDiaryController {
     @GetMapping("/personal_diary/{diaryId}/habits")
     public ResponseEntity<List<HabitTrackerDTO>> getAllHabitTrackers(@PathVariable Long diaryId) {
         return ResponseEntity.ok(personalDiaryService.getAllHabitTrackers(diaryId));
+    }
+
+    @PostMapping("/personal_diary/{diaryId}/todos")
+    public ResponseEntity<ToDoListDTO> createToDoList(@PathVariable Long diaryId, @RequestBody ToDoListDTO toDoListDTO) {
+        ToDoListDTO createdToDoList = personalDiaryService.createToDoList(
+                diaryId,
+                toDoListDTO
+        );
+        return ResponseEntity.ok(createdToDoList);
+    }
+
+    @GetMapping("/personal_diary/{diaryId}/todos")
+    public ResponseEntity<List<ToDoListDTO>> getAllToDos(@PathVariable Long diaryId) {
+        return ResponseEntity.ok(personalDiaryService.getAllToDoLists(diaryId));
     }
 
 
