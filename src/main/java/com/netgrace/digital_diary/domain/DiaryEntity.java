@@ -1,6 +1,7 @@
 package com.netgrace.digital_diary.domain;
 
 import lombok.Data;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
