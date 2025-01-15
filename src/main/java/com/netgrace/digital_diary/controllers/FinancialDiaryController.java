@@ -1,7 +1,6 @@
 package com.netgrace.digital_diary.controllers;
 
 import com.netgrace.digital_diary.domain.FinancialDiaryDTO;
-import com.netgrace.digital_diary.domain.FinancialDiaryEntity;
 import com.netgrace.digital_diary.services.FinancialDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
