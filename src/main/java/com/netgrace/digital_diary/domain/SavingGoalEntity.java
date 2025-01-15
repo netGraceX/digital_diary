@@ -1,9 +1,12 @@
 package com.netgrace.digital_diary.domain;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "saving_goals")
+@Data
 public class SavingGoalEntity {
 
     @Id

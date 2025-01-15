@@ -23,9 +23,7 @@ public class PersonalDiaryController {
 
     @PostMapping("/personal_diary")
     public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@RequestBody PersonalDiaryDTO personalDiaryDTO) {
-        PersonalDiaryDTO createdPersonalDiary = personalDiaryService.createPersonalDiary(
-                personalDiaryDTO
-        );
+        PersonalDiaryDTO createdPersonalDiary = personalDiaryService.createPersonalDiary(personalDiaryDTO);
         return ResponseEntity.ok(createdPersonalDiary);
     }
 

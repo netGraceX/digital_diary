@@ -53,6 +53,7 @@ public class PersonalDiaryService {
     }
 
     public PersonalDiaryDTO getPersonalDiaryById(Long id) {
+        //todo id check
         PersonalDiaryDTO personalDiary = personalDiaryRepository.findById(id).map(personalDiaryMapper::personalDiaryToPersonalDiaryDTO).get();
         return personalDiary;
     }
