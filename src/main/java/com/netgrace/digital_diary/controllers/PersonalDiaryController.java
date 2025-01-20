@@ -27,31 +27,31 @@ public class PersonalDiaryController {
         return ResponseEntity.ok(createdPersonalDiary);
     }
 
-    @GetMapping("/personal_diary")
-    public ResponseEntity<List<PersonalDiaryDTO>> getAllPersonalDiaries() {
-        return ResponseEntity.ok(personalDiaryService.getAllPersonalDiaries());
+    @GetMapping("/personal_diary/{userId}")
+    public ResponseEntity<List<PersonalDiaryDTO>> getAllPersonalDiaries(@PathVariable Long userId) {
+        return ResponseEntity.ok(personalDiaryService.getAllPersonalDiaries(userId));
     }
 
-    @GetMapping("/personal_diary/{id}")
-    public PersonalDiaryDTO getPersonalDiaryById(@PathVariable Long id) {
-        return personalDiaryService.getPersonalDiaryById(id);
+    @GetMapping("/personal_diary/{userId}/{id}")
+    public PersonalDiaryDTO getPersonalDiaryById(@PathVariable Long userId, @PathVariable Long id) {
+        return personalDiaryService.getPersonalDiaryById(userId, id);
     }
 
-    @PutMapping("/personal_diary/{id}")
-    public ResponseEntity<PersonalDiaryDTO> updatePersonalDiary(@PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
-        PersonalDiaryDTO updatedPersonalDiaryEntity = personalDiaryService.updatePersonalDiary(id, personalDiaryDTO);
+    @PutMapping("/personal_diary/{userId}/{id}")
+    public ResponseEntity<PersonalDiaryDTO> updatePersonalDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+        PersonalDiaryDTO updatedPersonalDiaryEntity = personalDiaryService.updatePersonalDiary(userId, id, personalDiaryDTO);
         return ResponseEntity.ok(updatedPersonalDiaryEntity);
     }
 
-    @PatchMapping("/personal_diary/{id}")
-    public ResponseEntity<PersonalDiaryDTO> patchPersonalDiary(@PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
-        PersonalDiaryDTO updatedPersonalDiary = personalDiaryService.patchPersonalDiary(id, personalDiaryDTO);
+    @PatchMapping("/personal_diary/{userId}/{id}")
+    public ResponseEntity<PersonalDiaryDTO> patchPersonalDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+        PersonalDiaryDTO updatedPersonalDiary = personalDiaryService.patchPersonalDiary(userId, id, personalDiaryDTO);
         return  ResponseEntity.ok(updatedPersonalDiary);
     }
 
-    @DeleteMapping("/personal_diary/{id}")
-    public ResponseEntity<Void> deletePersonalDiary(@PathVariable Long id) {
-        personalDiaryService.deletePersonalDiary(id);
+    @DeleteMapping("/personal_diary/{userId}/{id}")
+    public ResponseEntity<Void> deletePersonalDiary(@PathVariable Long userId, @PathVariable Long id) {
+        personalDiaryService.deletePersonalDiary(userId, id);
         return ResponseEntity.noContent().build();
     }
 

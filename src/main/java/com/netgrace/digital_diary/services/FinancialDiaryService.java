@@ -34,12 +34,10 @@ public class FinancialDiaryService {
 
 
     public FinancialDiaryDTO createFinancialDiary(Long userId, FinancialDiaryDTO financialDiaryDTO) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " not found"));
+        User user = authorizationService.verifyUserOwnership(userId);
         FinancialDiaryEntity diaryEntity = financialDiaryMapper.financialDiaryDTOtoFinancialDiary(financialDiaryDTO);
         diaryEntity.setAppUser(user);
         return financialDiaryMapper.financialDiaryToFinancialDiaryDTO(financialDiaryRepository.save(diaryEntity));
-
     }
 
     public List<FinancialDiaryDTO> getAllFinancialDiaries(Long userId) {
