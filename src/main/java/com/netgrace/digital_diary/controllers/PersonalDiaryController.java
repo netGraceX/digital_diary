@@ -21,9 +21,9 @@ public class PersonalDiaryController {
         this.personalDiaryService = journalService;
     }
 
-    @PostMapping("/personal_diary")
-    public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@RequestBody PersonalDiaryDTO personalDiaryDTO) {
-        PersonalDiaryDTO createdPersonalDiary = personalDiaryService.createPersonalDiary(personalDiaryDTO);
+    @PostMapping("/personal_diary/{userId}")
+    public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@PathVariable Long userId, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+        PersonalDiaryDTO createdPersonalDiary = personalDiaryService.createPersonalDiary(userId, personalDiaryDTO);
         return ResponseEntity.ok(createdPersonalDiary);
     }
 

@@ -19,7 +19,6 @@ public class DiaryEntity {
 
     @PrePersist
     public void prePersist() {
-
         this.creationDate = LocalDate.now();
     }
 

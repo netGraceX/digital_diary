@@ -19,37 +19,37 @@ public class FinancialDiaryController {
         this.financialDiaryService = financialDiaryService;
     }
 
-    @PostMapping("/financial_diary")
-    public ResponseEntity<FinancialDiaryDTO> createFinancialDiary(@RequestBody FinancialDiaryDTO financialDiaryDTO) {
-        FinancialDiaryDTO createdDiary = financialDiaryService.createFinancialDiary(financialDiaryDTO);
+    @PostMapping("/financial_diary/{userId}")
+    public ResponseEntity<FinancialDiaryDTO> createFinancialDiary(@PathVariable Long userId, @RequestBody FinancialDiaryDTO financialDiaryDTO) {
+        FinancialDiaryDTO createdDiary = financialDiaryService.createFinancialDiary(userId, financialDiaryDTO);
         return ResponseEntity.ok(createdDiary);
     }
 
-    @GetMapping("/financial_diary")
-    public ResponseEntity<List<FinancialDiaryDTO>> createFinancialDiary() {
-        return ResponseEntity.ok(financialDiaryService.getAllFinancialDiaries());
+    @GetMapping("/financial_diary/{userId}")
+    public ResponseEntity<List<FinancialDiaryDTO>> getAllFinancialDiaries(@PathVariable Long userId) {
+        return ResponseEntity.ok(financialDiaryService.getAllFinancialDiaries(userId));
     }
 
-    @GetMapping("/financial_diary/{id}")
-    public ResponseEntity<FinancialDiaryDTO> getFinancialDiaryById(@PathVariable Long id) {
-        return ResponseEntity.ok(financialDiaryService.getFinancialDiaryById(id));
+    @GetMapping("/financial_diary/{userId}/{id}")
+    public ResponseEntity<FinancialDiaryDTO> getFinancialDiaryById(@PathVariable Long userId, @PathVariable Long id) {
+        return ResponseEntity.ok(financialDiaryService.getFinancialDiaryById(userId, id));
     }
 
-    @PutMapping("/financial_diary/{id}")
-    public ResponseEntity<FinancialDiaryDTO> updateFinancialDiary(@PathVariable Long id, @RequestBody FinancialDiaryDTO financialDiaryDTO) {
-        FinancialDiaryDTO updatedDiary = financialDiaryService.updateFinancialDiary(id, financialDiaryDTO);
+    @PutMapping("/financial_diary/{userId}/{id}")
+    public ResponseEntity<FinancialDiaryDTO> updateFinancialDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody FinancialDiaryDTO financialDiaryDTO) {
+        FinancialDiaryDTO updatedDiary = financialDiaryService.updateFinancialDiary(userId, id, financialDiaryDTO);
         return ResponseEntity.ok(updatedDiary);
     }
 
-    @PatchMapping("/financial_diary/{id}")
-    public ResponseEntity<FinancialDiaryDTO> patchFinancialDiary(@PathVariable Long id, @RequestBody FinancialDiaryDTO patchDetails) {
-        FinancialDiaryDTO updatedDiary = financialDiaryService.patchFinancialDiary(id, patchDetails);
+    @PatchMapping("/financial_diary/{userId}/{id}")
+    public ResponseEntity<FinancialDiaryDTO> patchFinancialDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody FinancialDiaryDTO patchDetails) {
+        FinancialDiaryDTO updatedDiary = financialDiaryService.patchFinancialDiary(userId, id, patchDetails);
         return ResponseEntity.ok(updatedDiary);
     }
 
-    @DeleteMapping("/financial_diary/{id}")
-    public ResponseEntity<Void> deleteFinancialDiary(@PathVariable Long id) {
-        financialDiaryService.deleteFinancialDiary(id);
+    @DeleteMapping("/financial_diary/{userId}/{id}")
+    public ResponseEntity<Void> deleteFinancialDiary(@PathVariable Long userId, @PathVariable Long id) {
+        financialDiaryService.deleteFinancialDiary(userId, id);
         return ResponseEntity.noContent().build();
     }
 

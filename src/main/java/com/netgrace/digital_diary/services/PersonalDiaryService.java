@@ -5,6 +5,8 @@ import com.netgrace.digital_diary.repositories.GoalRepository;
 import com.netgrace.digital_diary.repositories.HabitTrackerRepository;
 import com.netgrace.digital_diary.repositories.PersonalDiaryRepository;
 import com.netgrace.digital_diary.repositories.ToDoListRepository;
+import com.netgrace.digital_diary.security.User;
+import com.netgrace.digital_diary.security.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -24,6 +26,9 @@ public class PersonalDiaryService {
     private HabitTrackerRepository habitTrackerRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ToDoListRepository toDoListRepository;
 
     @Autowired
@@ -38,12 +43,14 @@ public class PersonalDiaryService {
     @Autowired
     private ToDoListMapper toDoListMapper;
 
-    @Transactional
-    public PersonalDiaryDTO createPersonalDiary(PersonalDiaryDTO personalDiaryDTO) {
+    //@Transactional
+    public PersonalDiaryDTO createPersonalDiary(Long userId, PersonalDiaryDTO personalDiaryDTO) {
+        User user = userRepository.findById(userId).orElse(null);
+        //todo: user checks
         PersonalDiaryEntity personalDiaryEntity = personalDiaryMapper.personalDiaryDTOtoPersonalDiary(personalDiaryDTO);
+        personalDiaryEntity.setAppUser(user);
         return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(personalDiaryEntity));
     }
-
 
     public List<PersonalDiaryDTO> getAllPersonalDiaries() {
         List<PersonalDiaryEntity> personalDiaries = personalDiaryRepository.findAll();
