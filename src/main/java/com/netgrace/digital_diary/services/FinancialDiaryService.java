@@ -3,6 +3,7 @@ package com.netgrace.digital_diary.services;
 import com.netgrace.digital_diary.domain.FinancialDiaryDTO;
 import com.netgrace.digital_diary.domain.FinancialDiaryEntity;
 import com.netgrace.digital_diary.domain.FinancialDiaryMapper;
+import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
 import com.netgrace.digital_diary.exceptions.UnauthorizedException;
 import com.netgrace.digital_diary.repositories.FinancialDiaryRepository;
 import com.netgrace.digital_diary.security.User;
@@ -32,6 +33,15 @@ public class FinancialDiaryService {
     @Autowired
     private FinancialDiaryMapper financialDiaryMapper;
 
+    private FinancialDiaryEntity checkUserAuthorization (Long userId, Long diaryId) {
+        User user = authorizationService.verifyUserOwnership(userId);
+        FinancialDiaryEntity diary = financialDiaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("Financial Diary with id " + diaryId + " not found"));
+        if (!diary.getAppUser().getId().equals(userId)) {
+            throw new UnauthorizedException("You are not authorized to access this diary");
+        }
+        return diary;
+    }
 
     public FinancialDiaryDTO createFinancialDiary(Long userId, FinancialDiaryDTO financialDiaryDTO) {
         User user = authorizationService.verifyUserOwnership(userId);
@@ -49,34 +59,18 @@ public class FinancialDiaryService {
 
     }
 
-    public FinancialDiaryDTO getFinancialDiaryById(Long userId, Long id) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        FinancialDiaryEntity diary = financialDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Financial Diary with ID " + id + " not found"));
-
-        if (!diary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
+    public FinancialDiaryDTO getFinancialDiaryById(Long userId, Long diaryId) {
+        FinancialDiaryEntity diary = checkUserAuthorization(userId, diaryId);
         return financialDiaryMapper.financialDiaryToFinancialDiaryDTO(diary);
     }
 
-    public void deleteFinancialDiary(Long userId, Long id) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        FinancialDiaryEntity existingDiary = financialDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Financial Diary with id " + id + " not found"));
-        if (!existingDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
-        financialDiaryRepository.deleteById(id);
+    public void deleteFinancialDiary(Long userId, Long diaryId) {
+        FinancialDiaryEntity diary = checkUserAuthorization(userId, diaryId);
+        financialDiaryRepository.deleteById(diaryId);
     }
 
-    public FinancialDiaryDTO updateFinancialDiary(Long userId, Long id, FinancialDiaryDTO financialDiaryDTO) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        FinancialDiaryEntity existingDiary = financialDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Financial Diary with id " + id + " not found"));
-        if (!existingDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
+    public FinancialDiaryDTO updateFinancialDiary(Long userId, Long diaryId, FinancialDiaryDTO financialDiaryDTO) {
+        FinancialDiaryEntity existingDiary = checkUserAuthorization(userId, diaryId);
         FinancialDiaryEntity updatedDiary = financialDiaryMapper.financialDiaryDTOtoFinancialDiary(financialDiaryDTO);
         updatedDiary.setId(existingDiary.getId());
         updatedDiary.setAppUser(existingDiary.getAppUser());
@@ -85,13 +79,8 @@ public class FinancialDiaryService {
         return financialDiaryMapper.financialDiaryToFinancialDiaryDTO(savedDiary);
     }
 
-    public FinancialDiaryDTO patchFinancialDiary(Long userId, Long id, FinancialDiaryDTO patchDetails) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        FinancialDiaryEntity existingDiary = financialDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Financial Diary with id " + id + " not found"));
-        if (!existingDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
+    public FinancialDiaryDTO patchFinancialDiary(Long userId, Long diaryId, FinancialDiaryDTO patchDetails) {
+        FinancialDiaryEntity existingDiary = checkUserAuthorization(userId, diaryId);
         financialDiaryMapper.updateFinancialDiaryFromDTO(patchDetails, existingDiary);
         return financialDiaryMapper.financialDiaryToFinancialDiaryDTO(financialDiaryRepository.save(existingDiary));
     }

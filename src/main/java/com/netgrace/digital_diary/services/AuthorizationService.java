@@ -1,5 +1,6 @@
 package com.netgrace.digital_diary.services;
 
+import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
 import com.netgrace.digital_diary.exceptions.UnauthorizedException;
 import com.netgrace.digital_diary.security.User;
 import com.netgrace.digital_diary.security.UserRepository;
@@ -26,6 +27,8 @@ public class AuthorizationService {
         }
         return user;
     }
+
+
 }
 
 
