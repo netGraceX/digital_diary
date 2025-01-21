@@ -55,46 +55,49 @@ public class PersonalDiaryController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/personal_diary/{diaryId}/goals")
-    public ResponseEntity<GoalDTO> createGoal(@PathVariable Long diaryId, @RequestBody GoalDTO goalDTO) {
+    @PostMapping("/personal_diary/{userId}/{diaryId}/goals")
+    public ResponseEntity<GoalDTO> createGoal(@PathVariable Long userId, @PathVariable Long diaryId, @RequestBody GoalDTO goalDTO) {
         GoalDTO createdGoal = personalDiaryService.createGoal(
+                userId,
                 diaryId,
                 goalDTO
         );
         return ResponseEntity.ok(createdGoal);
     }
 
-    @GetMapping("/personal_diary/{diaryId}/goals")
-    public ResponseEntity<List<GoalDTO>> getAllGoals(@PathVariable Long diaryId) {
-        return ResponseEntity.ok(personalDiaryService.getAllGoals(diaryId));
+    @GetMapping("/personal_diary/{userId}/{diaryId}/goals")
+    public ResponseEntity<List<GoalDTO>> getAllGoals(@PathVariable Long userId, @PathVariable Long diaryId) {
+        return ResponseEntity.ok(personalDiaryService.getAllGoals(userId, diaryId));
     }
 
-    @PostMapping("/personal_diary/{diaryId}/habits")
-    public ResponseEntity<HabitTrackerDTO> createHabitTracker(@PathVariable Long diaryId, @RequestBody HabitTrackerDTO habitTrackerDTO) {
+    @PostMapping("/personal_diary/{userId}/{diaryId}/habits")
+    public ResponseEntity<HabitTrackerDTO> createHabitTracker(@PathVariable Long userId, @PathVariable Long diaryId, @RequestBody HabitTrackerDTO habitTrackerDTO) {
         HabitTrackerDTO createdHabitTracker = personalDiaryService.createHabitTracker(
+                userId,
                 diaryId,
                 habitTrackerDTO
         );
         return ResponseEntity.ok(createdHabitTracker);
     }
 
-    @GetMapping("/personal_diary/{diaryId}/habits")
-    public ResponseEntity<List<HabitTrackerDTO>> getAllHabitTrackers(@PathVariable Long diaryId) {
-        return ResponseEntity.ok(personalDiaryService.getAllHabitTrackers(diaryId));
+    @GetMapping("/personal_diary/{userId}/{diaryId}/habits")
+    public ResponseEntity<List<HabitTrackerDTO>> getAllHabitTrackers(@PathVariable Long userId, @PathVariable Long diaryId) {
+        return ResponseEntity.ok(personalDiaryService.getAllHabitTrackers(userId, diaryId));
     }
 
-    @PostMapping("/personal_diary/{diaryId}/todos")
-    public ResponseEntity<ToDoListDTO> createToDoList(@PathVariable Long diaryId, @RequestBody ToDoListDTO toDoListDTO) {
+    @PostMapping("/personal_diary/{userId}/{diaryId}/todos")
+    public ResponseEntity<ToDoListDTO> createToDoList(@PathVariable Long userId, @PathVariable Long diaryId, @RequestBody ToDoListDTO toDoListDTO) {
         ToDoListDTO createdToDoList = personalDiaryService.createToDoList(
+                userId,
                 diaryId,
                 toDoListDTO
         );
         return ResponseEntity.ok(createdToDoList);
     }
 
-    @GetMapping("/personal_diary/{diaryId}/todos")
-    public ResponseEntity<List<ToDoListDTO>> getAllToDos(@PathVariable Long diaryId) {
-        return ResponseEntity.ok(personalDiaryService.getAllToDoLists(diaryId));
+    @GetMapping("/personal_diary/{userId}/{diaryId}/todos")
+    public ResponseEntity<List<ToDoListDTO>> getAllToDos(@PathVariable Long userId, @PathVariable Long diaryId) {
+        return ResponseEntity.ok(personalDiaryService.getAllToDoLists(userId, diaryId));
     }
 
 

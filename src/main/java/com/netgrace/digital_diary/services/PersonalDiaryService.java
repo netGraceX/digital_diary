@@ -11,7 +11,6 @@ import com.netgrace.digital_diary.security.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,12 +48,20 @@ public class PersonalDiaryService {
     @Autowired
     private AuthorizationService authorizationService;
 
-    //@Transactional
+    private PersonalDiaryEntity checkUserAuthorization (Long userId, Long diaryId) {
+        User user = authorizationService.verifyUserOwnership(userId);
+        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + diaryId + " not found"));
+        if (!diary.getAppUser().getId().equals(userId)) {
+            throw new UnauthorizedException("You are not authorized to access this diary");
+        }
+        return diary;
+    }
     public PersonalDiaryDTO createPersonalDiary(Long userId, PersonalDiaryDTO personalDiaryDTO) {
         User user = authorizationService.verifyUserOwnership(userId);
-        PersonalDiaryEntity personalDiaryEntity = personalDiaryMapper.personalDiaryDTOtoPersonalDiary(personalDiaryDTO);
-        personalDiaryEntity.setAppUser(user);
-        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(personalDiaryEntity));
+        PersonalDiaryEntity diary = personalDiaryMapper.personalDiaryDTOtoPersonalDiary(personalDiaryDTO);
+        diary.setAppUser(user);
+        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(diary));
     }
 
     public List<PersonalDiaryDTO> getAllPersonalDiaries(Long userId) {
@@ -65,35 +72,19 @@ public class PersonalDiaryService {
                 .collect(Collectors.toList());
     }
 
-    public PersonalDiaryDTO getPersonalDiaryById(Long userId, Long id) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        PersonalDiaryEntity existingPersonalDiary = personalDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + id + " not found"));
-
-        if (!existingPersonalDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
-        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(existingPersonalDiary);
+    public PersonalDiaryDTO getPersonalDiaryById(Long userId, Long diaryId) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
+        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(diary);
     }
 
-    public PersonalDiaryDTO patchPersonalDiary(Long userId, Long id, PersonalDiaryDTO patchDetails) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        PersonalDiaryEntity existingPersonalDiary = personalDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + id + " not found"));
-        if (!existingPersonalDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
-        personalDiaryMapper.updatePersonalDiaryFromDto(patchDetails, existingPersonalDiary);
-        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(existingPersonalDiary));
+    public PersonalDiaryDTO patchPersonalDiary(Long userId, Long diaryId, PersonalDiaryDTO patchDetails) {
+        PersonalDiaryEntity existingDiary = checkUserAuthorization (userId, diaryId);
+        personalDiaryMapper.updatePersonalDiaryFromDto(patchDetails, existingDiary);
+        return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(personalDiaryRepository.save(existingDiary));
     }
 
-    public PersonalDiaryDTO updatePersonalDiary(Long userId, Long id, PersonalDiaryDTO updatedPersonalDiaryDTO) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        PersonalDiaryEntity existingDiary = personalDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + id + " not found"));
-        if (!existingDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
+    public PersonalDiaryDTO updatePersonalDiary(Long userId, Long diaryId, PersonalDiaryDTO updatedPersonalDiaryDTO) {
+        PersonalDiaryEntity existingDiary = checkUserAuthorization (userId, diaryId);
         PersonalDiaryEntity updatedDiary = personalDiaryMapper.personalDiaryDTOtoPersonalDiary(updatedPersonalDiaryDTO);
         updatedDiary.setId(existingDiary.getId());
         updatedDiary.setAppUser(existingDiary.getAppUser());
@@ -102,42 +93,33 @@ public class PersonalDiaryService {
         return personalDiaryMapper.personalDiaryToPersonalDiaryDTO(savedDiary);
     }
 
-    public void deletePersonalDiary(Long userId, Long id) {
-        User user = authorizationService.verifyUserOwnership(userId);
-        PersonalDiaryEntity existingDiary = personalDiaryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + id + " not found"));
-        if (!existingDiary.getAppUser().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not authorized to access this diary");
-        }
-        personalDiaryRepository.deleteById(id);
+    public void deletePersonalDiary(Long userId, Long diaryId) {
+        PersonalDiaryEntity existingDiary = checkUserAuthorization (userId, diaryId);
+        personalDiaryRepository.deleteById(diaryId);
     }
 
-    public GoalDTO createGoal(Long diaryId, GoalDTO goalDTO) {
-        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + diaryId + " not found"));
+    public GoalDTO createGoal(Long userId, Long diaryId, GoalDTO goalDTO) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
         GoalEntity goal = goalMapper.goalDTOtoGoalEntity(goalDTO);
         goal.setDiary(diary);
         return goalMapper.goalEntityToGoalDTO(goalRepository.save(goal));
     }
 
-    public List<GoalDTO> getAllGoals(Long diaryId) {
-        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + diaryId + " not found"));
+    public List<GoalDTO> getAllGoals(Long userId, Long diaryId) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
         List<GoalDTO> goals = diary.getGoals().stream().map(goalMapper::goalEntityToGoalDTO).collect(Collectors.toList());
         return goals;
     }
 
-    public HabitTrackerDTO createHabitTracker(Long diaryId, HabitTrackerDTO habitTrackerDTO) {
-        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+    public HabitTrackerDTO createHabitTracker(Long userId, Long diaryId, HabitTrackerDTO habitTrackerDTO) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
         HabitTrackerEntity tracker = habitTrackerMapper.habitTrackerDTOEntityToHabitTracker(habitTrackerDTO);
         tracker.setDiary(diary);
         return habitTrackerMapper.habitTrackerToHabitTrackerDTO(habitTrackerRepository.save(tracker));
     }
 
-    public List<HabitTrackerDTO> getAllHabitTrackers(Long diaryId) {
-        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+    public List<HabitTrackerDTO> getAllHabitTrackers(Long userId, Long diaryId) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
         List<HabitTrackerDTO> trackerList = diary.getHabitTracker()
                 .stream()
                 .map(habitTrackerMapper::habitTrackerToHabitTrackerDTO)
@@ -145,17 +127,15 @@ public class PersonalDiaryService {
         return trackerList;
     }
 
-    public ToDoListDTO createToDoList(Long diaryId, ToDoListDTO toDoListDTO) {
-        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+    public ToDoListDTO createToDoList(Long userId, Long diaryId, ToDoListDTO toDoListDTO) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
         ToDoListEntity toDoList = toDoListMapper.toDoListDTOtoToDoListEntity(toDoListDTO);
         toDoList.setDiary(diary);
         return toDoListMapper.toDoListEntityToToDoListDTO(toDoListRepository.save(toDoList));
     }
 
-    public List<ToDoListDTO> getAllToDoLists(Long diaryId) {
-        PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Diary with id" + diaryId + "not found"));
+    public List<ToDoListDTO> getAllToDoLists(Long userId, Long diaryId) {
+        PersonalDiaryEntity diary = checkUserAuthorization (userId, diaryId);
         List<ToDoListDTO> todoList = diary.getToDoList()
                 .stream()
                 .map(toDoListMapper::toDoListEntityToToDoListDTO)
