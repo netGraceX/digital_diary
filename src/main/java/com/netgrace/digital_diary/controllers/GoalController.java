@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path = "api/v1/diaries")
 public class GoalController {
@@ -24,13 +26,13 @@ public class GoalController {
 
 
     @PutMapping("/goals/{id}")
-    public ResponseEntity<GoalDTO> updateGoal(@PathVariable Long id, @RequestBody GoalDTO goalDTO) {
+    public ResponseEntity<GoalDTO> updateGoal(@PathVariable Long id, @Valid @RequestBody GoalDTO goalDTO) {
         GoalDTO updatedGoal = goalService.updateGoal(id, goalDTO);
         return ResponseEntity.ok(updatedGoal);
     }
 
     @PatchMapping("/goals/{id}")
-    public ResponseEntity<GoalDTO> patchGoal(@PathVariable Long id, @RequestBody GoalDTO goalDTO) {
+    public ResponseEntity<GoalDTO> patchGoal(@PathVariable Long id, @Valid @RequestBody GoalDTO goalDTO) {
         GoalDTO updatedGoal = goalService.patchGoal(id, goalDTO);
         return  ResponseEntity.ok(updatedGoal);
     }

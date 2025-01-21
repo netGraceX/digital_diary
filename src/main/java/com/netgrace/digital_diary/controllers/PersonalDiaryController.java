@@ -8,6 +8,8 @@ import com.netgrace.digital_diary.services.PersonalDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +24,8 @@ public class PersonalDiaryController {
     }
 
     @PostMapping("/personal_diary/{userId}")
-    public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@PathVariable Long userId, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+    public ResponseEntity<PersonalDiaryDTO> createPersonalDiary(@PathVariable Long userId,
+                                                                @Valid @RequestBody PersonalDiaryDTO personalDiaryDTO) {
         PersonalDiaryDTO createdPersonalDiary = personalDiaryService.createPersonalDiary(userId, personalDiaryDTO);
         return ResponseEntity.ok(createdPersonalDiary);
     }
@@ -38,13 +41,17 @@ public class PersonalDiaryController {
     }
 
     @PutMapping("/personal_diary/{userId}/{id}")
-    public ResponseEntity<PersonalDiaryDTO> updatePersonalDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+    public ResponseEntity<PersonalDiaryDTO> updatePersonalDiary(@PathVariable Long userId,
+                                                                @PathVariable Long id,
+                                                                @Valid @RequestBody PersonalDiaryDTO personalDiaryDTO) {
         PersonalDiaryDTO updatedPersonalDiaryEntity = personalDiaryService.updatePersonalDiary(userId, id, personalDiaryDTO);
         return ResponseEntity.ok(updatedPersonalDiaryEntity);
     }
 
     @PatchMapping("/personal_diary/{userId}/{id}")
-    public ResponseEntity<PersonalDiaryDTO> patchPersonalDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody PersonalDiaryDTO personalDiaryDTO) {
+    public ResponseEntity<PersonalDiaryDTO> patchPersonalDiary(@PathVariable Long userId,
+                                                               @PathVariable Long id,
+                                                               @Valid @RequestBody PersonalDiaryDTO personalDiaryDTO) {
         PersonalDiaryDTO updatedPersonalDiary = personalDiaryService.patchPersonalDiary(userId, id, personalDiaryDTO);
         return  ResponseEntity.ok(updatedPersonalDiary);
     }
@@ -56,7 +63,9 @@ public class PersonalDiaryController {
     }
 
     @PostMapping("/personal_diary/{userId}/{diaryId}/goals")
-    public ResponseEntity<GoalDTO> createGoal(@PathVariable Long userId, @PathVariable Long diaryId, @RequestBody GoalDTO goalDTO) {
+    public ResponseEntity<GoalDTO> createGoal(@PathVariable Long userId,
+                                              @PathVariable Long diaryId,
+                                              @Valid @RequestBody GoalDTO goalDTO) {
         GoalDTO createdGoal = personalDiaryService.createGoal(
                 userId,
                 diaryId,
@@ -71,7 +80,9 @@ public class PersonalDiaryController {
     }
 
     @PostMapping("/personal_diary/{userId}/{diaryId}/habits")
-    public ResponseEntity<HabitTrackerDTO> createHabitTracker(@PathVariable Long userId, @PathVariable Long diaryId, @RequestBody HabitTrackerDTO habitTrackerDTO) {
+    public ResponseEntity<HabitTrackerDTO> createHabitTracker(@PathVariable Long userId,
+                                                              @PathVariable Long diaryId,
+                                                              @Valid @RequestBody HabitTrackerDTO habitTrackerDTO) {
         HabitTrackerDTO createdHabitTracker = personalDiaryService.createHabitTracker(
                 userId,
                 diaryId,
@@ -86,7 +97,9 @@ public class PersonalDiaryController {
     }
 
     @PostMapping("/personal_diary/{userId}/{diaryId}/todos")
-    public ResponseEntity<ToDoListDTO> createToDoList(@PathVariable Long userId, @PathVariable Long diaryId, @RequestBody ToDoListDTO toDoListDTO) {
+    public ResponseEntity<ToDoListDTO> createToDoList(@PathVariable Long userId,
+                                                      @PathVariable Long diaryId,
+                                                      @Valid @RequestBody ToDoListDTO toDoListDTO) {
         ToDoListDTO createdToDoList = personalDiaryService.createToDoList(
                 userId,
                 diaryId,

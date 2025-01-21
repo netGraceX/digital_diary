@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path = "api/v1/diaries")
 public class HabitTrackerController {
@@ -23,13 +25,13 @@ public class HabitTrackerController {
     }
 
     @PutMapping("/habits/{id}")
-    public ResponseEntity<HabitTrackerDTO> updateHabitTracker(@PathVariable Long id, @RequestBody HabitTrackerDTO trackerDTO) {
+    public ResponseEntity<HabitTrackerDTO> updateHabitTracker(@PathVariable Long id, @Valid @RequestBody HabitTrackerDTO trackerDTO) {
         HabitTrackerDTO updatedTracker = habitTrackerService.updateHabitTracker(id, trackerDTO);
         return ResponseEntity.ok(updatedTracker);
     }
 
     @PatchMapping("/habits/{id}")
-    public ResponseEntity<HabitTrackerDTO> patchHabit(@PathVariable Long id, @RequestBody HabitTrackerDTO trackerDTO) {
+    public ResponseEntity<HabitTrackerDTO> patchHabit(@PathVariable Long id, @Valid @RequestBody HabitTrackerDTO trackerDTO) {
         HabitTrackerDTO updatedTracker = habitTrackerService.patchHabitTracker(id, trackerDTO);
         return  ResponseEntity.ok(updatedTracker);
     }

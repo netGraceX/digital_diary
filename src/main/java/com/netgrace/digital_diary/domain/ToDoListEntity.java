@@ -2,6 +2,8 @@ package com.netgrace.digital_diary.domain;
 
 import lombok.Data;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,6 +16,8 @@ public class ToDoListEntity {
     private Long id;
     @ManyToOne
     private PersonalDiaryEntity diary;
+    @NotNull(message = "Date cannot be null")
+    @PastOrPresent(message = "Date must be in the past or today")
     private LocalDate dayDate;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "todo_id")

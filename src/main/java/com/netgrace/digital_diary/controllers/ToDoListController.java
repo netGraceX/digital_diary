@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path = "api/v1/diaries")
 public class ToDoListController {
@@ -24,13 +26,13 @@ public class ToDoListController {
 
 
     @PutMapping("/todos/{id}")
-    public ResponseEntity<ToDoListDTO> updateToDoList(@PathVariable Long id, @RequestBody ToDoListDTO toDoListDTO) {
+    public ResponseEntity<ToDoListDTO> updateToDoList(@PathVariable Long id, @Valid @RequestBody ToDoListDTO toDoListDTO) {
         ToDoListDTO updatedToDo = toDoListService.updateToDoList(id, toDoListDTO);
         return ResponseEntity.ok(updatedToDo);
     }
 
     @PatchMapping("/todos/{id}")
-    public ResponseEntity<ToDoListDTO> patchToDoList(@PathVariable Long id, @RequestBody ToDoListDTO toDoListDTO) {
+    public ResponseEntity<ToDoListDTO> patchToDoList(@PathVariable Long id, @Valid @RequestBody ToDoListDTO toDoListDTO) {
         ToDoListDTO updatedToDo = toDoListService.patchToDoList(id, toDoListDTO);
         return  ResponseEntity.ok(updatedToDo);
     }

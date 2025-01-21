@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,8 @@ public class FinancialDiaryController {
     }
 
     @PostMapping("/financial_diary/{userId}")
-    public ResponseEntity<FinancialDiaryDTO> createFinancialDiary(@PathVariable Long userId, @RequestBody FinancialDiaryDTO financialDiaryDTO) {
+    public ResponseEntity<FinancialDiaryDTO> createFinancialDiary(@PathVariable Long userId,
+                                                                  @Valid @RequestBody FinancialDiaryDTO financialDiaryDTO) {
         FinancialDiaryDTO createdDiary = financialDiaryService.createFinancialDiary(userId, financialDiaryDTO);
         return ResponseEntity.ok(createdDiary);
     }
@@ -36,13 +38,17 @@ public class FinancialDiaryController {
     }
 
     @PutMapping("/financial_diary/{userId}/{id}")
-    public ResponseEntity<FinancialDiaryDTO> updateFinancialDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody FinancialDiaryDTO financialDiaryDTO) {
+    public ResponseEntity<FinancialDiaryDTO> updateFinancialDiary(@PathVariable Long userId,
+                                                                  @PathVariable Long id,
+                                                                  @Valid @RequestBody FinancialDiaryDTO financialDiaryDTO) {
         FinancialDiaryDTO updatedDiary = financialDiaryService.updateFinancialDiary(userId, id, financialDiaryDTO);
         return ResponseEntity.ok(updatedDiary);
     }
 
     @PatchMapping("/financial_diary/{userId}/{id}")
-    public ResponseEntity<FinancialDiaryDTO> patchFinancialDiary(@PathVariable Long userId, @PathVariable Long id, @RequestBody FinancialDiaryDTO patchDetails) {
+    public ResponseEntity<FinancialDiaryDTO> patchFinancialDiary(@PathVariable Long userId,
+                                                                 @PathVariable Long id,
+                                                                 @Valid @RequestBody FinancialDiaryDTO patchDetails) {
         FinancialDiaryDTO updatedDiary = financialDiaryService.patchFinancialDiary(userId, id, patchDetails);
         return ResponseEntity.ok(updatedDiary);
     }
