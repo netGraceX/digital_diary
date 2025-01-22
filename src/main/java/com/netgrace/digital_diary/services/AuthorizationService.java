@@ -1,6 +1,7 @@
 package com.netgrace.digital_diary.services;
 
 import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
+import com.netgrace.digital_diary.exceptions.EntityNotFoundException;
 import com.netgrace.digital_diary.exceptions.UnauthorizedException;
 import com.netgrace.digital_diary.security.User;
 import com.netgrace.digital_diary.security.UserRepository;
@@ -21,7 +22,7 @@ public class AuthorizationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String authenticatedUsername = authentication.getName();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
         if (!user.getUsername().equals(authenticatedUsername)) {
             throw new UnauthorizedException("You are not authorized to access this resource");
         }

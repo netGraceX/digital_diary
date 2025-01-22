@@ -3,15 +3,13 @@ package com.netgrace.digital_diary.services;
 import com.netgrace.digital_diary.domain.FinancialDiaryDTO;
 import com.netgrace.digital_diary.domain.FinancialDiaryEntity;
 import com.netgrace.digital_diary.domain.FinancialDiaryMapper;
-import com.netgrace.digital_diary.domain.PersonalDiaryEntity;
+import com.netgrace.digital_diary.exceptions.EntityNotFoundException;
 import com.netgrace.digital_diary.exceptions.UnauthorizedException;
 import com.netgrace.digital_diary.repositories.FinancialDiaryRepository;
 import com.netgrace.digital_diary.security.User;
 import com.netgrace.digital_diary.security.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +34,7 @@ public class FinancialDiaryService {
     private FinancialDiaryEntity checkUserAuthorization (Long userId, Long diaryId) {
         User user = authorizationService.verifyUserOwnership(userId);
         FinancialDiaryEntity diary = financialDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Financial Diary with id " + diaryId + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Financial Diary with id " + diaryId + " not found"));
         if (!diary.getAppUser().getId().equals(userId)) {
             throw new UnauthorizedException("You are not authorized to access this diary");
         }

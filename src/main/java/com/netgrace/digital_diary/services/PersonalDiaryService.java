@@ -1,6 +1,7 @@
 package com.netgrace.digital_diary.services;
 
 import com.netgrace.digital_diary.domain.*;
+import com.netgrace.digital_diary.exceptions.EntityNotFoundException;
 import com.netgrace.digital_diary.exceptions.UnauthorizedException;
 import com.netgrace.digital_diary.repositories.GoalRepository;
 import com.netgrace.digital_diary.repositories.HabitTrackerRepository;
@@ -51,7 +52,7 @@ public class PersonalDiaryService {
     private PersonalDiaryEntity checkUserAuthorization (Long userId, Long diaryId) {
         User user = authorizationService.verifyUserOwnership(userId);
         PersonalDiaryEntity diary = personalDiaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalStateException("Personal Diary with id " + diaryId + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Personal Diary with id " + diaryId + " not found"));
         if (!diary.getAppUser().getId().equals(userId)) {
             throw new UnauthorizedException("You are not authorized to access this diary");
         }
